@@ -19,7 +19,18 @@ class MainViewController: UIViewController {
     override func loadView() {
         super.loadView()
     
+        let contentController = WKUserContentController()
+        
+        if let jsSource = Bundle.main.url(forResource: "video_play_messenger", withExtension: "js"),
+            let jsSourceString = try? String(contentsOf: jsSource) {
+            let userScript = WKUserScript(source: jsSourceString, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+            
+            contentController.addUserScript(userScript)
+            contentController.add(self, name: "callbackHandler")
+        }
+        
         let wkWebConfig = WKWebViewConfiguration()
+        wkWebConfig.userContentController = contentController
         
         webView = WKWebView(frame: .zero, configuration: wkWebConfig)
         webView.uiDelegate = self
@@ -38,7 +49,7 @@ class MainViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        loadUrl(URL(string: "https://24hphim.com/")!)
+        loadUrl(URL(string: "https://24hphim.com/phim/boruto-naruto-the-he-ke-tiep-1544/xem-phim.html")!)
     }
     
     private func validateUrlString(_ urlString: String?) -> URL? {
@@ -133,6 +144,17 @@ extension MainViewController: WKNavigationDelegate {
 
 extension MainViewController: WKUIDelegate {
     
+}
+
+extension MainViewController: WKScriptMessageHandler {
+    
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "callbackHandler" {
+            if let messageString = message.body as? String {
+                print(messageString)
+            }
+        }
+    }
 }
 
 extension MainViewController: Identifiable { }
