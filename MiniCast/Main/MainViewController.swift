@@ -13,12 +13,14 @@ import Material
 
 class MainViewController: UIViewController {
 
-    var webView: WKWebView!
-    var urlField: UISearchBar!
+    private lazy var addressBar: AddressBarView = {
+        let view = AddressBarView(frame: .zero)
+        view.delegate = self
+        return view
+    } ()
     
-    override func loadView() {
-        super.loadView()
     
+    private lazy var webView: WKWebView = {
         let contentController = WKUserContentController()
         
         if let jsSource = Bundle.main.url(forResource: "video_play_messenger", withExtension: "js"),
@@ -32,18 +34,23 @@ class MainViewController: UIViewController {
         let wkWebConfig = WKWebViewConfiguration()
         wkWebConfig.userContentController = contentController
         
-        webView = WKWebView(frame: .zero, configuration: wkWebConfig)
-        webView.uiDelegate = self
-        webView.navigationDelegate = self
+        let view = WKWebView(frame: .zero, configuration: wkWebConfig)
+        view.uiDelegate = self
+        view.navigationDelegate = self
+        
+        return view
+    } ()
+    
+    override func loadView() {
+        super.loadView()
         
         view = webView
+        
+        navigationItem.titleView = addressBar
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        prepareUrlAddressField()
-        prepareToolbar()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -51,6 +58,8 @@ class MainViewController: UIViewController {
         
         loadUrl(URL(string: "https://24hphim.com/phim/boruto-naruto-the-he-ke-tiep-1544/xem-phim.html")!)
     }
+    
+    // MARK: - Helpers
     
     private func validateUrlString(_ urlString: String?) -> URL? {
         guard let urlString = urlString else {
@@ -68,50 +77,16 @@ class MainViewController: UIViewController {
     }
     
     private func loadUrl(_ url: URL) {
+        addressBar.text = url.absoluteString
         webView.load(URLRequest(url: url))
     }
-
-    private func showSnackBarForMessage(_ message: String) {
-        guard let snackbar = snackbarController?.snackbar else {
-            return
-        }
-        
-        snackbar.text = message
-        
-        _ = snackbarController?.animate(snackbar: .visible, delay: 1)
-        _ = snackbarController?.animate(snackbar: .hidden, delay: 4)
-    }
 }
 
-extension MainViewController {
-    private func prepareUrlAddressField() {
-        urlField = UISearchBar(frame: .zero)
-        urlField.placeholder = "Enter URL"
-        urlField.setImage(Icon.edit, for: .search, state: .normal)
-        urlField.autocorrectionType = .no
-        urlField.autocapitalizationType = .none
-        urlField.returnKeyType = .go
-        urlField.spellCheckingType = .no
-        urlField.searchBarStyle = .prominent
-        urlField.delegate = self
-        navigationItem.titleView = urlField
-    }
+extension MainViewController: AddressBarViewDelegate {
     
-    private func prepareCastButton() {
+    func addressBarView(_ addressBarView: AddressBarView, goTo url: String?) {
         
-    }
-    
-    private func prepareToolbar() {
-        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
-        toolbarItems = [refresh]
-        navigationController?.isToolbarHidden = false
-    }
-}
-
-extension MainViewController: UISearchBarDelegate {
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let url = validateUrlString(searchBar.text) else {
+        guard let url = validateUrlString(addressBarView.text) else {
             return
         }
         
@@ -127,15 +102,16 @@ extension MainViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
         let error = error as NSError
-        showSnackBarForMessage(error.localizedDescription)
+        
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: (WKNavigationActionPolicy) -> Void) {
+        
         if let urlString = navigationAction.request.url?.absoluteString,
-            let inputUrl = urlField.text,
+            let inputUrl = addressBar.text,
             urlString.contains(inputUrl) {
-            urlField.text = urlString
+            addressBar.text = urlString
         }
         
         decisionHandler(.allow)
