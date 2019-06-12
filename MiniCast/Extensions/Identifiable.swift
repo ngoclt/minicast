@@ -14,7 +14,6 @@ protocol Identifiable: class {
 
 extension Identifiable {
     static var identifier: String {
-        /// Use the class's name as an identifier
         return String(describing: Self.self)
     }
 }

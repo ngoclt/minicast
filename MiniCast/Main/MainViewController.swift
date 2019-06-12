@@ -41,6 +41,12 @@ class MainViewController: UIViewController {
         return view
     } ()
     
+    private var currentVideo: String? {
+        didSet {
+            addressBar.enabledCast = currentVideo != nil
+        }
+    }
+    
     override func loadView() {
         super.loadView()
         
@@ -101,8 +107,7 @@ extension MainViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
-        let error = error as NSError
-        
+        log.error(error)
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
@@ -126,8 +131,8 @@ extension MainViewController: WKScriptMessageHandler {
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "callbackHandler" {
-            if let messageString = message.body as? String {
-                print(messageString)
+            if let urlString = message.body as? String {
+                currentVideo = urlString
             }
         }
     }

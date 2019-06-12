@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+ platform :ios, '12.0'
 
 target 'MiniCast' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -8,6 +8,7 @@ target 'MiniCast' do
   # Pods for MiniCast
   pod 'XCGLogger', '~> 7.0.0'
   pod 'Material', '~> 3.1.0'
+  pod 'google-cast-sdk', '< 5.0', '>=4.3.4'
 
   target 'MiniCastTests' do
     inherit! :search_paths

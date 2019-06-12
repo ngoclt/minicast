@@ -31,6 +31,12 @@ class AddressBarView: UIView {
         }
     }
     
+    public var enabledCast: Bool = false {
+        didSet {
+            castButton.isEnabled = enabledCast
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
