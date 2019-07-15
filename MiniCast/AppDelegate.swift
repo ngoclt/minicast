@@ -8,6 +8,7 @@
 
 import UIKit
 import XCGLogger
+import GoogleCast
 
 let log = XCGLogger.default
 
@@ -15,10 +16,28 @@ let log = XCGLogger.default
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    let kReceiverAppID = kGCKDefaultMediaReceiverApplicationID
+    let kDebugLoggingEnabled = true
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let criteria = GCKDiscoveryCriteria(applicationID: kReceiverAppID)
+        let options = GCKCastOptions(discoveryCriteria: criteria)
+        options.physicalVolumeButtonsWillControlDeviceVolume = true
+        
+        GCKCastContext.setSharedInstanceWith(options)
+        
+        GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
+        
+        // Theme the cast button using UIAppearance.
+        GCKUICastButton.appearance().tintColor = UIColor.gray
+        
+        // Enable logger.
+        GCKLogger.sharedInstance().delegate = self
+        
+        GCKCastContext.sharedInstance().sessionManager.add(self)
+        GCKCastContext.sharedInstance().imagePicker = self
+        
         return true
     }
 
@@ -41,9 +60,61 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        NotificationCenter.default.removeObserver(self,
+                                                  name: NSNotification.Name.gckExpandedMediaControlsTriggered,
+                                                  object: nil)
     }
-
-
 }
 
+extension AppDelegate: GCKLoggerDelegate {
+    
+    // MARK - GCKLoggerDelegate
+    func logMessage(_ message: String,
+                    at level: GCKLoggerLevel,
+                    fromFunction function: String,
+                    location: String) {
+        if (kDebugLoggingEnabled) {
+            print(function + " - " + message)
+        }
+    }
+}
+
+// MARK: - GCKSessionManagerListener
+
+extension AppDelegate: GCKSessionManagerListener {
+    func sessionManager(_: GCKSessionManager, didEnd _: GCKSession, withError error: Error?) {
+        if error == nil {
+            if let view = window?.rootViewController?.view {
+                Toast.displayMessage("Session ended", for: 3, in: view)
+            }
+        } else {
+            let message = "Session ended unexpectedly:\n\(error?.localizedDescription ?? "")"
+            showAlert(withTitle: "Session error", message: message)
+        }
+    }
+    
+    func sessionManager(_: GCKSessionManager, didFailToStart _: GCKSession, withError error: Error) {
+        let message = "Failed to start session:\n\(error.localizedDescription)"
+        showAlert(withTitle: "Session error", message: message)
+    }
+    
+    func showAlert(withTitle title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default))
+        window?.rootViewController?.present(alert, animated: true, completion: nil)
+    }
+}
+
+// MARK: - GCKUIImagePicker
+
+extension AppDelegate: GCKUIImagePicker {
+    func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
+        let images = metadata.images
+        guard !images().isEmpty else { print("No images available in media metadata."); return nil }
+        if images().count > 1, imageHints.imageType == .background {
+            return images()[1] as? GCKImage
+        } else {
+            return images()[0] as? GCKImage
+        }
+    }
+}

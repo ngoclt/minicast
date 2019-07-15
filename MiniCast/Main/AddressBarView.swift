@@ -8,6 +8,7 @@
 
 import UIKit
 import Material
+import GoogleCast
 
 protocol AddressBarViewDelegate: class {
     func addressBarView(_ addressBarView: AddressBarView, goTo url: String?)
@@ -22,7 +23,7 @@ class AddressBarView: UIView {
     @IBOutlet private var contentView: UIView!
     @IBOutlet private var urlField: TextField!
     @IBOutlet private var actionButton: UIButton!
-    @IBOutlet private var castButton: UIButton!
+    @IBOutlet private var castButton: GCKUICastButton!
     
     
     public var text: String? {

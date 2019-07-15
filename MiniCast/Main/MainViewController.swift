@@ -10,8 +10,11 @@ import UIKit
 import WebKit
 import AVFoundation
 import Material
+import GoogleCast
 
 class MainViewController: UIViewController {
+    
+    private static let kCastControlBarsAnimationDuration: TimeInterval = 0.20
 
     private lazy var addressBar: AddressBarView = {
         let view = AddressBarView(frame: .zero)
@@ -41,6 +44,18 @@ class MainViewController: UIViewController {
         return view
     } ()
     
+    private var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
+    
+    var miniMediaControlsViewEnabled = false {
+        didSet {
+            if isViewLoaded {
+                
+            }
+        }
+    }
+    
+    var miniMediaControlsItemEnabled = false
+    
     private var currentVideo: String? {
         didSet {
             addressBar.enabledCast = currentVideo != nil
@@ -57,15 +72,26 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let castContext = GCKCastContext.sharedInstance()
+        miniMediaControlsViewController = castContext.createMiniMediaControlsViewController()
+        miniMediaControlsViewController.delegate = self
+        
+        setupToolbar()
+        loadUrl(URL(string: "https://24hphim.com/phim/boruto-naruto-the-he-ke-tiep-1544/xem-phim.html")!)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        loadUrl(URL(string: "https://24hphim.com/phim/boruto-naruto-the-he-ke-tiep-1544/xem-phim.html")!)
     }
     
     // MARK: - Helpers
+    
+    private func setupToolbar() {
+        let add = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(addTapped))
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        toolbarItems = [add, spacer]
+    }
     
     private func validateUrlString(_ urlString: String?) -> URL? {
         guard let urlString = urlString else {
@@ -133,8 +159,42 @@ extension MainViewController: WKScriptMessageHandler {
         if message.name == "callbackHandler" {
             if let urlString = message.body as? String {
                 currentVideo = urlString
+                navigationController?.setToolbarHidden(false, animated: true)
             }
         }
+    }
+    
+    @objc private func addTapped() {
+        let metadata = GCKMediaMetadata()
+        metadata.setString(webView.title ?? "Untitled", forKey: kGCKMetadataKeyTitle)
+        
+        let url = URL.init(string: currentVideo ?? "")
+        guard let mediaURL = url else {
+            print("invalid mediaURL")
+            return
+        }
+        
+        let mediaInfoBuilder = GCKMediaInformationBuilder(contentURL: mediaURL)
+        mediaInfoBuilder.streamType = .none
+        mediaInfoBuilder.contentType = "video/mp4"
+        mediaInfoBuilder.metadata = metadata
+        let mediaInformation = mediaInfoBuilder.build()
+        
+        if let request = GCKCastContext.sharedInstance().sessionManager.currentSession?.remoteMediaClient?.loadMedia(mediaInformation) {
+            request.delegate = self
+        }
+    }
+}
+
+extension MainViewController: GCKSessionManagerListener, GCKRequestDelegate {
+    
+}
+
+extension MainViewController: GCKUIMiniMediaControlsViewControllerDelegate {
+    
+    func miniMediaControlsViewController(_: GCKUIMiniMediaControlsViewController,
+                                         shouldAppear _: Bool) {
+        
     }
 }
 
