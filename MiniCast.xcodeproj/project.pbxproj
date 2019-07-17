@@ -19,6 +19,7 @@
 		4C1A4DF222AA78E5006004E8 /* MiniCastUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1A4DF122AA78E5006004E8 /* MiniCastUITests.swift */; };
 		4C1A4E0422AAEB9F006004E8 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1A4E0322AAEB9F006004E8 /* Identifiable.swift */; };
 		4C1A4E0622AAEBD5006004E8 /* UIStoryboard+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1A4E0522AAEBD5006004E8 /* UIStoryboard+UIViewController.swift */; };
+		4C95A1A222DF60D100B0E6B9 /* UIViewController+AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C95A1A122DF60D100B0E6B9 /* UIViewController+AlertView.swift */; };
 		4CDB1A6722AEDC9C00BCAB21 /* video_play_messenger.js in Resources */ = {isa = PBXBuildFile; fileRef = 4CDB1A6622AEDC9C00BCAB21 /* video_play_messenger.js */; };
 		4CDB1A6922B0336B00BCAB21 /* AddressBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CDB1A6822B0336A00BCAB21 /* AddressBarView.xib */; };
 		4CDB1A6B22B034C000BCAB21 /* AddressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDB1A6A22B034C000BCAB21 /* AddressBarView.swift */; };
@@ -65,6 +66,7 @@
 		4C1A4DF322AA78E5006004E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C1A4E0322AAEB9F006004E8 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		4C1A4E0522AAEBD5006004E8 /* UIStoryboard+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+UIViewController.swift"; sourceTree = "<group>"; };
+		4C95A1A122DF60D100B0E6B9 /* UIViewController+AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AlertView.swift"; sourceTree = "<group>"; };
 		4CDB1A6622AEDC9C00BCAB21 /* video_play_messenger.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = video_play_messenger.js; sourceTree = "<group>"; };
 		4CDB1A6822B0336A00BCAB21 /* AddressBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddressBarView.xib; sourceTree = "<group>"; };
 		4CDB1A6A22B034C000BCAB21 /* AddressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressBarView.swift; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 				4C1A4E0322AAEB9F006004E8 /* Identifiable.swift */,
 				4C1A4E0522AAEBD5006004E8 /* UIStoryboard+UIViewController.swift */,
 				4CDB1A6C22B0383500BCAB21 /* UIView+Layout.swift */,
+				4C95A1A122DF60D100B0E6B9 /* UIViewController+AlertView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -471,6 +474,7 @@
 			files = (
 				4CDB1A6B22B034C000BCAB21 /* AddressBarView.swift in Sources */,
 				4C0415F622B1998800FE200C /* Toast.swift in Sources */,
+				4C95A1A222DF60D100B0E6B9 /* UIViewController+AlertView.swift in Sources */,
 				4C0415F222B138BA00FE200C /* VideoViewController.swift in Sources */,
 				4C1A4E0422AAEB9F006004E8 /* Identifiable.swift in Sources */,
 				4C1A4DD422AA78E4006004E8 /* MainViewController.swift in Sources */,

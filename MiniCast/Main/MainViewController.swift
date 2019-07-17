@@ -43,6 +43,15 @@ class MainViewController: UIViewController {
         return view
     } ()
     
+    private lazy var airPlayButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
+        button.setImage(#imageLiteral(resourceName: "Image"), for: .normal)
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(didTapOnAirPlayButton), for: .touchUpInside)
+        button.tintColor = .gray
+        return button
+    } ()
+    
     private lazy var castButton: GCKUICastButton = {
         let button = GCKUICastButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
         button.tintColor = .gray
@@ -58,18 +67,15 @@ class MainViewController: UIViewController {
     
     private var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
     
-    var miniMediaControlsViewEnabled = false {
+    var miniMediaControlsItemEnabled = false {
         didSet {
-            if isViewLoaded {
-                
-            }
+            airPlayButton.isEnabled = currentVideo != nil
         }
     }
     
-    var miniMediaControlsItemEnabled = false
-    
     private var currentVideo: String? {
         didSet {
+            airPlayButton.isEnabled = miniMediaControlsItemEnabled
             castButton.isEnabled = currentVideo != nil
             urlLabel.text = currentVideo
             urlLabel.sizeToFit()
@@ -103,9 +109,10 @@ class MainViewController: UIViewController {
     
     private func setupToolbar() {
         let urlBarButtonItem = UIBarButtonItem(customView: urlLabel)
+        let airPlayBarButtonItem = UIBarButtonItem(customView: airPlayButton)
         let castBarButtonItem = UIBarButtonItem(customView: castButton)
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        toolbarItems = [spacer, urlBarButtonItem, castBarButtonItem]
+        toolbarItems = [spacer, urlBarButtonItem, airPlayBarButtonItem, castBarButtonItem]
         
         navigationController?.toolbar.barTintColor = .white
         navigationController?.toolbar.shadowColor = .clear
@@ -205,13 +212,13 @@ extension MainViewController: WKScriptMessageHandler {
         }
     }
     
-    @objc private func addTapped() {
+    @objc private func didTapOnAirPlayButton() {
         let metadata = GCKMediaMetadata()
         metadata.setString(webView.title ?? "Untitled", forKey: kGCKMetadataKeyTitle)
         
         let url = URL.init(string: currentVideo ?? "")
         guard let mediaURL = url else {
-            print("invalid mediaURL")
+            showAlert(title: "Error", message: "It seems like the video url is not correct.")
             return
         }
         
@@ -235,7 +242,7 @@ extension MainViewController: GCKUIMiniMediaControlsViewControllerDelegate {
     
     func miniMediaControlsViewController(_: GCKUIMiniMediaControlsViewController,
                                          shouldAppear _: Bool) {
-        
+        miniMediaControlsItemEnabled = true
     }
 }
 
