@@ -11,7 +11,7 @@ import Material
 import GoogleCast
 
 protocol AddressBarViewDelegate: class {
-    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView)
+    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView, url: String?)
     func didTapHomeOnAddressBarView(_ addressBarView: AddressBarView)
     func didTapStopOnAddressBarView(_ addressBarView: AddressBarView)
     func didTapReloadOnAddressBarView(_ addressBarView: AddressBarView)
@@ -85,7 +85,7 @@ class AddressBarView: UIView {
     
     @IBAction private func didTapOnActionButton(_ sender: Any) {
         urlField.resignFirstResponder()
-        delegate?.didTapGoOnAddressBarView(self)
+        delegate?.didTapGoOnAddressBarView(self, url: text)
     }
     
     public func cancel() {
@@ -98,7 +98,7 @@ extension AddressBarView: TextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        delegate?.didTapHomeOnAddressBarView(self)
+        delegate?.didTapGoOnAddressBarView(self, url: textField.text)
         return true
     }
     

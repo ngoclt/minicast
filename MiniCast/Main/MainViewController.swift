@@ -142,12 +142,12 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: AddressBarViewDelegate {
-    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView) {
-        guard let url = validateUrlString(addressBarView.text) else {
+    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView, url: String?) {
+        guard let requestUrl = validateUrlString(url) else {
             return
         }
         
-        loadUrl(url)
+        loadUrl(requestUrl)
     }
     
     func didTapHomeOnAddressBarView(_ addressBarView: AddressBarView) {
