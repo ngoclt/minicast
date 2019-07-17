@@ -9,7 +9,6 @@
 import UIKit
 import WebKit
 import AVFoundation
-import Material
 import GoogleCast
 
 class MainViewController: UIViewController {
@@ -44,6 +43,19 @@ class MainViewController: UIViewController {
         return view
     } ()
     
+    private lazy var castButton: GCKUICastButton = {
+        let button = GCKUICastButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
+        button.tintColor = .gray
+        return button
+    } ()
+    
+    private lazy var urlLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 24))
+        label.fontSize = 11.0
+        label.textColor = .gray
+        return label
+    } ()
+    
     private var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
     
     var miniMediaControlsViewEnabled = false {
@@ -58,7 +70,9 @@ class MainViewController: UIViewController {
     
     private var currentVideo: String? {
         didSet {
-//            addressBar.enabledCast = currentVideo != nil
+            castButton.isEnabled = currentVideo != nil
+            urlLabel.text = currentVideo
+            urlLabel.sizeToFit()
         }
     }
     
@@ -77,7 +91,6 @@ class MainViewController: UIViewController {
         miniMediaControlsViewController.delegate = self
         
         setupToolbar()
-        loadUrl(URL(string: "https://24hphim.com/phim/boruto-naruto-the-he-ke-tiep-1544/xem-phim.html")!)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -89,9 +102,15 @@ class MainViewController: UIViewController {
     // MARK: - Helpers
     
     private func setupToolbar() {
-        let add = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(addTapped))
+        let urlBarButtonItem = UIBarButtonItem(customView: urlLabel)
+        let castBarButtonItem = UIBarButtonItem(customView: castButton)
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        toolbarItems = [add, spacer]
+        toolbarItems = [spacer, urlBarButtonItem, castBarButtonItem]
+        
+        navigationController?.toolbar.barTintColor = .white
+        navigationController?.toolbar.shadowColor = .clear
+        navigationController?.toolbar.isTranslucent = false
+        navigationController?.isToolbarHidden = false
     }
     
     private func validateUrlString(_ urlString: String?) -> URL? {
