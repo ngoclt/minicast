@@ -58,7 +58,7 @@ class MainViewController: UIViewController {
     
     private var currentVideo: String? {
         didSet {
-            addressBar.enabledCast = currentVideo != nil
+//            addressBar.enabledCast = currentVideo != nil
         }
     }
     
@@ -66,7 +66,6 @@ class MainViewController: UIViewController {
         super.loadView()
         
         view = webView
-        
         navigationItem.titleView = addressBar
     }
     
@@ -83,6 +82,8 @@ class MainViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        addressBar.canGoBack = webView.canGoBack
     }
     
     // MARK: - Helpers
@@ -115,25 +116,46 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: AddressBarViewDelegate {
-    
-    func addressBarView(_ addressBarView: AddressBarView, goTo url: String?) {
-        
+    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView) {
         guard let url = validateUrlString(addressBarView.text) else {
             return
         }
         
         loadUrl(url)
     }
+    
+    func didTapHomeOnAddressBarView(_ addressBarView: AddressBarView) {
+        
+    }
+    
+    func didTapStopOnAddressBarView(_ addressBarView: AddressBarView) {
+        webView.stopLoading()
+    }
+    
+    func didTapReloadOnAddressBarView(_ addressBarView: AddressBarView) {
+        webView.reload()
+    }
+    
+    func didTapBackOnAddressBarView(_ addressBarView: AddressBarView) {
+        webView.goBack()
+        addressBarView.canGoBack = webView.canGoBack
+    }
 }
 
 extension MainViewController: WKNavigationDelegate {
     
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        addressBar.isLoading = true
+        addressBar.canGoBack = webView.canGoBack
+    }
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-        
+        addressBar.isLoading = false
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
         log.error(error)
+        addressBar.isLoading = false
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,

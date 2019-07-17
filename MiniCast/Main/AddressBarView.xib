@@ -13,8 +13,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddressBarView" customModule="MiniCast" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="AdK-oV-bPX" id="sRG-fQ-vm2"/>
-                <outlet property="castButton" destination="sns-YK-g4J" id="hz3-lm-pqk"/>
+                <outlet property="backButton" destination="zrC-9K-7aT" id="Bag-UH-RfR"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="io1-09-GnV"/>
+                <outlet property="homeButton" destination="MuZ-fm-ZZs" id="wyM-Qf-6pj"/>
                 <outlet property="urlField" destination="dlX-tY-UnU" id="Zfs-hW-a1f"/>
             </connections>
         </placeholder>
@@ -23,11 +24,32 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ddd-Pg-8lb">
-                    <rect key="frame" x="20" y="7" width="374" height="30"/>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="ddd-Pg-8lb">
+                    <rect key="frame" x="10" y="7" width="394" height="30"/>
                     <subviews>
-                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Input URL here" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dlX-tY-UnU" customClass="TextField" customModule="Material">
-                            <rect key="frame" x="0.0" y="0.0" width="288" height="30"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zrC-9K-7aT">
+                            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="aGD-Ai-gKj"/>
+                                <constraint firstAttribute="height" constant="30" id="dd1-FV-SCW"/>
+                            </constraints>
+                            <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <state key="normal" image="BackIcon"/>
+                            <connections>
+                                <action selector="didTapOnBackButton:" destination="-1" eventType="touchUpInside" id="0p5-U6-wIJ"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MuZ-fm-ZZs">
+                            <rect key="frame" x="35" y="0.0" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="KfM-Hv-cNy"/>
+                                <constraint firstAttribute="width" constant="30" id="lJX-tc-qZU"/>
+                            </constraints>
+                            <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <state key="normal" image="HomeIcon"/>
+                        </button>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Input URL here" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dlX-tY-UnU" customClass="TextField" customModule="Material">
+                            <rect key="frame" x="70" y="0.0" width="289" height="30"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="go" textContentType="url"/>
@@ -39,25 +61,17 @@
                             </connections>
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AdK-oV-bPX">
-                            <rect key="frame" x="296" y="0.0" width="35" height="30"/>
+                            <rect key="frame" x="364" y="0.0" width="30" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="Fiw-g7-KaS"/>
-                                <constraint firstAttribute="width" constant="35" id="gwV-L1-WKk"/>
+                                <constraint firstAttribute="width" constant="30" id="gwV-L1-WKk"/>
                             </constraints>
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <state key="normal" image="cm_play_white"/>
+                            <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <state key="normal" image="ReloadIcon"/>
                             <connections>
                                 <action selector="didTapOnActionButton:" destination="-1" eventType="touchUpInside" id="Khg-B6-9Ja"/>
+                                <action selector="didTapOnHomeButton:" destination="-1" eventType="touchUpInside" id="wHu-xz-xNj"/>
                             </connections>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sns-YK-g4J" customClass="GCKUICastButton">
-                            <rect key="frame" x="339" y="0.0" width="35" height="30"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="35" id="LnQ-Ju-ylU"/>
-                                <constraint firstAttribute="height" constant="30" id="YGG-5h-5ib"/>
-                            </constraints>
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <state key="normal" image="cm_movie_white"/>
                         </button>
                     </subviews>
                 </stackView>
@@ -65,17 +79,19 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="ddd-Pg-8lb" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="aBF-5k-SwP"/>
-                <constraint firstItem="ddd-Pg-8lb" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="mbX-dL-j9I"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ddd-Pg-8lb" secondAttribute="trailing" constant="20" id="uev-Nx-bYw"/>
+                <constraint firstItem="ddd-Pg-8lb" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="mbX-dL-j9I"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ddd-Pg-8lb" secondAttribute="trailing" constant="10" id="uev-Nx-bYw"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>
         </view>
     </objects>
     <resources>
-        <image name="cm_movie_white" width="24" height="24"/>
-        <image name="cm_play_white" width="24" height="24"/>
+        <image name="BackIcon" width="20" height="20"/>
+        <image name="HomeIcon" width="20" height="20"/>
+        <image name="ReloadIcon" width="20" height="20"/>
     </resources>
 </document>

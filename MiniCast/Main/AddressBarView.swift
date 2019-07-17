@@ -11,7 +11,11 @@ import Material
 import GoogleCast
 
 protocol AddressBarViewDelegate: class {
-    func addressBarView(_ addressBarView: AddressBarView, goTo url: String?)
+    func didTapGoOnAddressBarView(_ addressBarView: AddressBarView)
+    func didTapHomeOnAddressBarView(_ addressBarView: AddressBarView)
+    func didTapStopOnAddressBarView(_ addressBarView: AddressBarView)
+    func didTapReloadOnAddressBarView(_ addressBarView: AddressBarView)
+    func didTapBackOnAddressBarView(_ addressBarView: AddressBarView)
 }
 
 class AddressBarView: UIView {
@@ -22,19 +26,25 @@ class AddressBarView: UIView {
     
     @IBOutlet private var contentView: UIView!
     @IBOutlet private var urlField: TextField!
+    @IBOutlet private var homeButton: UIButton!
+    @IBOutlet private var backButton: UIButton!
     @IBOutlet private var actionButton: UIButton!
-    @IBOutlet private var castButton: GCKUICastButton!
     
+    public var isLoading: Bool = false {
+        didSet {
+            actionButton.setImage(isLoading ? #imageLiteral(resourceName: "CloseIcon") : #imageLiteral(resourceName: "ReloadIcon"), for: .normal)
+        }
+    }
+    
+    public var canGoBack: Bool = false {
+        didSet {
+            backButton.isEnabled = canGoBack
+        }
+    }
     
     public var text: String? {
         didSet {
             urlField.text = text
-        }
-    }
-    
-    public var enabledCast: Bool = false {
-        didSet {
-            castButton.isEnabled = enabledCast
         }
     }
     
@@ -61,22 +71,21 @@ class AddressBarView: UIView {
         addSubview(contentView);
         
         contentView.pinEdges(to: self)
-        
-        actionButton.setImage(Icon.cm.play, for: .normal)
-        castButton.setImage(Icon.cm.movie, for: .normal)
     }
     
-    private func goToUrl() {
-        text = urlField.text
-        
-        delegate?.addressBarView(self, goTo: text)
-        
+    @IBAction private func didTapOnBackButton(_ sender: Any) {
         urlField.resignFirstResponder()
+        delegate?.didTapBackOnAddressBarView(self)
     }
     
+    @IBAction private func didTapOnHomeButton(_ sender: Any) {
+        urlField.resignFirstResponder()
+        delegate?.didTapHomeOnAddressBarView(self)
+    }
     
     @IBAction private func didTapOnActionButton(_ sender: Any) {
-        goToUrl()
+        urlField.resignFirstResponder()
+        delegate?.didTapGoOnAddressBarView(self)
     }
     
     public func cancel() {
@@ -88,7 +97,8 @@ class AddressBarView: UIView {
 extension AddressBarView: TextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        goToUrl()
+        textField.resignFirstResponder()
+        delegate?.didTapHomeOnAddressBarView(self)
         return true
     }
     
